@@ -6,17 +6,33 @@ end tell
 
 tell application "System Events"
 	tell process "System Preferences"
-		set success to my waitFor(it, "ASUS PB279 (1)")
+		set windowName to "ASUS PB278 (1)"
+		set success to my waitFor(it, windowName)
 		log success
-		tell tab group 1 of window 1
+		tell tab group 1 of window windowName
 			click radio button "Scaled"
 			select row 2 of table 1 of scroll area 1
 		end tell
-		set success2 to my waitFor(it, "ASUS PB279 (1)")
-		log success2
+		repeat until exists tab group 1 of group 1 of window windowName
+		end repeat
+		
+		tell tab group 1 of group 1 of window windowName
+			click radio button "Default for display"
+		end tell
+		
+		tell window windowName
+			repeat until exists group 1 of group 1 of toolbar 1
+			end repeat
+			click button 1 of group 1 of group 1 of toolbar 1
+		end tell
 		
 	end tell
 end tell
+
+tell application "System Preferences"
+	quit
+end tell
+
 
 
 on waitFor(target, windowName)
@@ -40,4 +56,3 @@ on waitFor(target, windowName)
 	end try
 	return counter ≤ MAX_COUNT
 end waitFor
-
